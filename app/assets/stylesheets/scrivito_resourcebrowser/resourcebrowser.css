@@ -1,0 +1,1010 @@
+/*
+  A resource browser modal window to add, edit, delete, select and search CMS resources. Each resource
+  type like Image or BlogPost has its own item representation and custom edit view. All styles are
+  bootstrap independent. You are free to customize the resource browser to your likings.
+*/
+
+.editing-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -webkit-transition: opacity 0.5s linear;
+  -moz-transition: opacity 0.5s linear;
+  -o-transition: opacity 0.5s linear;
+  transition: opacity 0.5s linear;
+  position: fixed;
+  z-index: 222222;
+}
+
+.editing-overlay.show {
+  opacity: 0.85;
+  filter: alpha(opacity=85);
+  -webkit-transition: opacity 0.3s linear;
+  -moz-transition: opacity 0.3s linear;
+  -o-transition: opacity 0.3s linear;
+  transition: opacity 0.3s linear;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 222222;
+}
+
+.editing-resourcebrowser {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 5px 30px #000000;
+  -moz-box-shadow: 0 5px 30px #000000;
+  box-shadow: 0 5px 30px #000000;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -webkit-transition: opacity 0.5s linear;
+  -moz-transition: opacity 0.5s linear;
+  -o-transition: opacity 0.5s linear;
+  transition: opacity 0.5s linear;
+  background: #fff;
+  font-family: Arial, sans-serif;
+  height: 90%;
+  left: 50%;
+  margin: -250px 0 0 -40%;
+  overflow: hidden;
+  position: fixed;
+  top: 50%;
+  visibility: hidden;
+  width: 90%;
+  z-index: 3333333;
+}
+
+.editing-resourcebrowser.show {
+  opacity: 1;
+  filter: alpha(opacity=100);
+  -webkit-transition: opacity 0.3s linear;
+  -moz-transition: opacity 0.3s linear;
+  -o-transition: opacity 0.3s linear;
+  transition: opacity 0.3s linear;
+  top: 50%;
+  visibility: visible;
+  z-index: 3333333;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-footer .editing-button {
+  float: right;
+  margin: 0 10px 0 0;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-body {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  background:#eee;
+  clear: both;
+  height: 100%;
+  margin: 0;
+  padding: 0 0 50px 0;
+  position: relative;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-wrapper {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  height: 100%;
+  padding-top: 50px;
+  position: relative;
+  width: 70%;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-topbar {
+  background: #666;
+  color:#fff;
+  -webkit-box-shadow: -3px 0 5px -3px #333 inset;
+  -moz-box-shadow: -3px 0 5px -3px #333 inset;
+  box-shadow: -3px 0 5px -3px #333 inset;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 50px;
+  left: 0;
+  padding: 11px 10px 9px 10px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-search {
+  float: left;
+  position: relative;
+  width: 65%;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-search .search-field {
+  border:0px;
+  color:#333;
+  -webkit-border-radius: 15px 0 0 15px;
+  -moz-border-radius: 15px 0 0 15px;
+  border-radius: 15px 0 0 15px;
+  -webkit-box-shadow: 0 0 3px #ccc inset,0 0 8px rgba(109, 131, 166, .0);
+  -moz-box-shadow: 0 0 3px #ccc inset,0 0 8px rgba(109, 131, 166, .0);
+  box-shadow: 0 0 3px #ccc inset,0 0 8px rgba(109, 131, 166, .0);
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: border linear .5s, box-shadow linear .5s;
+  -moz-transition: border linear .5s, box-shadow linear .5s;
+  -o-transition: border linear .5s, box-shadow linear .5s;
+  transition: border linear .5s, box-shadow linear .5s;
+  display: block;
+  float: left;
+  font-size: 14px;
+  height: 30px;
+  line-height: 30px;
+  margin: 0;
+  padding: 4px 14px;
+  width: 300px;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-search .search-field:focus {
+  -webkit-box-shadow: 0 0 1px #aaa inset,0 0 8px rgba(109, 131, 166, .6);
+  -moz-box-shadow: 0 0 1px #aaa inset,0 0 8px rgba(109, 131, 166, .6);
+  box-shadow: 0 0 1px #aaa inset,0 0 8px rgba(109, 131, 166, .6);
+  -webkit-transition: box-shadow linear .5s;
+  -moz-transition: box-shadow linear .5s;
+  -o-transition: box-shadow linear .5s;
+  transition: box-shadow linear .5s;
+  outline: 0;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-search .search-field-button {
+  background: #7EA46A;
+  -webkit-border-radius: 0 15px 15px 0;
+  -moz-border-radius: 0 15px 15px 0;
+  border-radius: 0 15px 15px 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  border: 0px;
+  border-left: none;
+  color: #fff;
+  cursor: pointer;
+  display: block;
+  float: left;
+  font-size: 14px;
+  font-weight: normal;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  width: 80px;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-search .search-field-button:hover {
+  background: #94BA80;
+  color: #fff;
+  cursor: pointer;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-search .search-field-button:active {
+  background: #7EA46A;
+  color: #fff;
+  cursor: pointer;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-topbar .editing-button-view {
+  display: block;
+  float: right;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 7px;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-topbar .editing-button-view:hover {
+  cursor: pointer;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-topbar .editing-button-view .editing-icon {
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  color: #fff;
+  font-size: 9px;
+  line-height: 32px;
+  text-shadow: 0 0 2px #333;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-topbar .editing-button-view:hover .editing-icon,
+.editing-resourcebrowser .editing-resourcebrowser-topbar .editing-button-view.active .editing-icon {
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  color: #7EA46A;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-filter,
+.editing-resourcebrowser .editing-resourcebrowser-items,
+.editing-resourcebrowser .editing-resourcebrowser-inspector {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  background: #eee;
+  float: left;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-filter {
+  background-color: #fafafa;
+  -webkit-box-shadow: 0 -3px 4px -3px #bbb inset,0 3px 4px -3px #bbb inset;
+  -moz-box-shadow: 0 -3px 4px -3px #bbb inset,0 3px 4px -3px #bbb inset;
+  box-shadow: 0 -3px 4px -3px #bbb inset,0 3px 4px -3px #bbb inset;
+  padding: 0;
+  width: 17%;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-items {
+  background: #CCCCCC;
+  -webkit-box-shadow: 0 0 4px #666 inset;
+  -moz-box-shadow: 0 0 4px #666 inset;
+  box-shadow: 0 0 4px #666 inset;
+  padding: 0;
+  width: 83%;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-inspector {
+  -webkit-box-shadow: 0 -3px 4px -3px #bbbbbb inset;
+  -moz-box-shadow: 0 -3px 4px -3px #bbbbbb inset;
+  box-shadow: 0 -3px 4px -3px #bbbbbb inset;
+  padding: 0 15px;
+  width: 30%;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-footer {
+  background: #eee;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  *zoom: 1;
+  bottom: 0;
+  left: 0;
+  height: 50px;
+  margin: 0;
+  padding: 10px 0;
+  position: absolute;
+  text-align: right;
+  width: 100%;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-footer:before,
+.editing-resourcebrowser .editing-resourcebrowser-footer:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-footer:after {
+  clear: both;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items {
+  display: block;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li {
+  *zoom: 1;
+  border-bottom: 1px solid #eee;
+  border-top: 1px solid #fff;
+  display: block;
+  margin: 0;
+  padding: 8px 5px 8px 8px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li:before,
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li:after {
+  clear: both;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li:first-child {
+  border-top: 1px solid transparent;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li:hover,
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li.active {
+  background: #7EA46A;
+  border-bottom: 1px solid #658B51;
+  border-top: 1px solid #658B51;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li:hover .editing-icon,
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li.active .editing-icon,
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li:hover .editing-resourcebrowser-filter-name,
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li.active .editing-resourcebrowser-filter-name {
+  color: #fff;
+  text-shadow: 0 1px 1px #888;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li.separator {
+  background-color: #f8f8f8;
+  background-image: -moz-linear-gradient(top, #ffffff, #eeeeee);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#eeeeee));
+  background-image: -webkit-linear-gradient(top, #ffffff, #eeeeee);
+  background-image: -o-linear-gradient(top, #ffffff, #eeeeee);
+  background-image: linear-gradient(to bottom, #ffffff, #eeeeee);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffeeeeee', GradientType=0);
+  -webkit-box-shadow: 0 0 1px #aaaaaa;
+  -moz-box-shadow: 0 0 1px #aaaaaa;
+  box-shadow: 0 0 1px #aaaaaa;
+  border: none;
+  height: 4px;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li.selected-items {
+  -webkit-box-shadow: 0 0 3px #cccccc inset;
+  -moz-box-shadow: 0 0 3px #cccccc inset;
+  box-shadow: 0 0 3px #cccccc inset;
+  background: #eee;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li.selected-items:hover,
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li.selected-items.active {
+  -webkit-box-shadow: 0 0 3px #333333 inset;
+  -moz-box-shadow: 0 0 3px #333333 inset;
+  box-shadow: 0 0 3px #333333 inset;
+  background: #5A8BD1;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-counter {
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  background: #444;
+  color: #fff;
+  display: inline-block;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 11px;
+  margin: 1px -5px 0 7px;
+  padding: 1px 6px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items .editing-icon {
+  color: #666;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 0 7px 0 0;
+  text-shadow: 0 1px 1px #fff;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items .editing-resourcebrowser-filter-name {
+  color: #666;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 20px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li:hover .editing-resourcebrowser-counter,
+.editing-resourcebrowser ul.editing-resourcebrowser-filter-items li.active .editing-resourcebrowser-counter {
+  background: #fff;
+  color: #5a8bd1;
+  text-shadow: 0 0 0 #fff;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-items.uploader-drag-over {
+  background: #658b51;
+  -webkit-box-shadow: 0 0 4px #333333 inset;
+  -moz-box-shadow: 0 0 4px #333333 inset;
+  box-shadow: 0 0 4px #333333 inset;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-items.uploader-drag-over:before {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  color: #fff;
+  content: '\F044';
+  display: block;
+  text-align: center;
+  font-family: 'editing_iconsregular';
+  font-size: 83px;
+  font-style: normal;
+  font-weight: normal;
+  position: absolute;
+  top: 50%;
+  vertical-align: middle;
+  width: 83%;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-items.uploader-drag-over ul.editing-resourcebrowser-thumbnails {
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails {
+  display: block;
+  list-style-type: none;
+  margin: 0;
+  overflow: hidden;
+  padding: 15px 0 0 15px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 0 4px #888888;
+  -moz-box-shadow: 0 0 4px #888888;
+  box-shadow: 0 0 4px #888888;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  background: #fff;
+  display: block;
+  float: left;
+  height: 200px;
+  line-height: normal;
+  margin: 0 15px 15px 0;
+  overflow: hidden;
+  padding: 0;
+  width: 200px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li:hover {
+  -webkit-box-shadow: 0 0 7px 0px #555555;
+  -moz-box-shadow: 0 0 7px 0px #555555;
+  box-shadow: 0 0 7px 0px #555555;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li.active {
+  -webkit-box-shadow: 0 0 3px 4px #658B51;
+  -moz-box-shadow: 0 0 3px 4px #658B51;
+  box-shadow: 0 0 3px 4px #658B51;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li .editing-resourcebrowser-preview {
+  background: #eee;
+  height: 160px;
+  overflow: hidden;
+  position: relative;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li .editing-resourcebrowser-preview img {
+  display: block;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li .editing-resourcebrowser-preview .editing-icon {
+  color: #bfbfbf;
+  display: block;
+  float: none;
+  font-size: 50px;
+  line-height: 160px;
+  text-align: center;
+  text-shadow: 0 1px 1px #fff;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li .editing-resourcebrowser-meta {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 40px;
+  padding: 5px 35px 5px 5px;
+  position: relative;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li .editing-resourcebrowser-thumbnails-name {
+  color: #555;
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li .editing-resourcebrowser-thumbnails-size {
+  color: #aaa;
+  display: block;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li .editing-resourcebrowser-inspect:before {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  background: #7EA46A;
+  top: 0;
+  color: #fff;
+  content: '\F043';
+  display: block;
+  font-family: 'editing_iconsregular';
+  font-style: normal;
+  font-weight: normal;
+  height: 40px;
+  line-height: 42px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  width: 40px;
+  font-size: 11px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li .editing-resourcebrowser-thumbnails-select:before {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  background: #fff;
+  bottom: 0;
+  color: #ddd;
+  content: '\F02A';
+  display: block;
+  font-family: 'editing_iconsregular';
+  font-style: normal;
+  font-weight: normal;
+  height: 40px;
+  line-height: 42px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  width: 40px;
+  font-size: 11px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails li .editing-resourcebrowser-thumbnails-select.active:before {
+  background: #7EA46A;
+  color: #fff;
+  content: '\F02B';
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.small li {
+  height: 100px;
+  width: 130px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.small li .editing-resourcebrowser-preview {
+  height: 70px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.small li .editing-resourcebrowser-preview .editing-icon {
+  font-size: 20px;
+  line-height: 70px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.small li .editing-resourcebrowser-meta {
+  height: 30px;
+  padding: 2px 25px 0px 5px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.small li .editing-resourcebrowser-thumbnails-name {
+  font-size: 10px;
+  line-height: 28px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.small li .editing-resourcebrowser-thumbnails-size {
+  font-size: 9px;
+  line-height: 13px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.small li .editing-resourcebrowser-thumbnails-select:before {
+  font-size: 9px;
+  height: 30px;
+  line-height: 32px;
+  width: 30px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.big li {
+  height: 300px;
+  width: 300px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.big li .editing-resourcebrowser-preview {
+  height: 260px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.big li .editing-resourcebrowser-preview .editing-icon {
+  font-size: 60px;
+  line-height: 260px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.large li {
+  height: 400px;
+  width: 400px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.large li .editing-resourcebrowser-preview {
+  height: 360px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.large li .editing-resourcebrowser-preview .editing-icon {
+  line-height: 360px;
+  font-size: 70px;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-inspector h3 {
+  color: #666;
+  font-size: 14px;
+  line-height: 32px;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-inspector h3 .editing-icon {
+  color: #666;
+  font-size: 12px;
+  line-height: 32px;
+  padding: 0 5px 0;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-inspector h3 .editing-button {
+  background-color: #f8f8f8;
+  background-image: -moz-linear-gradient(top, #ffffff, #eeeeee);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#eeeeee));
+  background-image: -webkit-linear-gradient(top, #ffffff, #eeeeee);
+  background-image: -o-linear-gradient(top, #ffffff, #eeeeee);
+  background-image: linear-gradient(to bottom, #ffffff, #eeeeee);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffeeeeee', GradientType=0);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 3px #ffffff;
+  -moz-box-shadow: 0 0 3px #ffffff;
+  box-shadow: 0 0 3px #ffffff;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  border: 1px solid #e3e3e3;
+  color: #333;
+  cursor: pointer;
+  display: block;
+  float: left;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 14px;
+  margin: 3px 10px 0 0;
+  min-width: 25px;
+  min-height: 14px;
+  padding: 2px 5px;
+  text-align: center;
+  text-shadow: 0 1px 0 #fff;
+  vertical-align: middle;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-inspector h3 .editing-button:hover {
+  background-color: #fbfbfb;
+  background-image: -moz-linear-gradient(top, #ffffff, #f6f6f6);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f6f6f6));
+  background-image: -webkit-linear-gradient(top, #ffffff, #f6f6f6);
+  background-image: -o-linear-gradient(top, #ffffff, #f6f6f6);
+  background-image: linear-gradient(to bottom, #ffffff, #f6f6f6);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff6f6f6', GradientType=0);
+  border: 1px solid #ccc;
+  color: #333;
+  cursor: pointer;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-inspector h3 .editing-button:active {
+  background-color: #e0e0e0;
+  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#eeeeee), to(#cccccc));
+  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: linear-gradient(to bottom, #eeeeee, #cccccc);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeeeeee', endColorstr='#ffcccccc', GradientType=0);
+  border: 1px solid #bbb;
+  color: #333;
+  cursor: pointer;
+}
+
+.editing-resourcebrowser .editing-resourcebrowser-inspector h3 .editing-button .editing-icon {
+  color: #888;
+  font-size: 8px;
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.no-editing-available {
+  color: #d3d3d3;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.no-editing-available .editing-icon {
+  color: #e3e3e3;
+  display: block;
+  font-size: 85px;
+  line-height: 200px;
+  text-align: center;
+  text-shadow: 0 1px 0 #ddd;
+}
+
+.editing-resourcebrowser-loading {
+  clear: both;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.editing-resourcebrowser-loading .editing-icon {
+  color: #666;
+  display: block;
+  font-size: 25px;
+  left: 0;
+  margin: 0 auto;
+  position: absolute;
+  text-align: center;
+  top: 46%;
+  width: 100%;
+  -webkit-animation: editing-rotation 5s infinite linear;
+  -moz-animation: editing-rotation 5s infinite linear;
+  -o-animation: editing-rotation 5s infinite linear;
+  animation: editing-rotation 5s infinite linear;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails .editing-resourcebrowser-loading .editing-icon {
+  color: #ddd;
+  font-size: 25px;
+  top: 38%;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.small .editing-resourcebrowser-loading .editing-icon {
+  font-size: 15px;
+  top: 35%;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.big .editing-resourcebrowser-loading .editing-icon {
+  font-size: 40px;
+}
+
+.editing-resourcebrowser ul.editing-resourcebrowser-thumbnails.large .editing-resourcebrowser-loading .editing-icon {
+  font-size: 50px;
+}
+
+.editing-resourcebrowser-progress-wrapper {
+  -webkit-box-shadow: 0 0 3px #bbbbbb;
+  -moz-box-shadow: 0 0 3px #bbbbbb;
+  box-shadow: 0 0 3px #bbbbbb;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+  left: 0;
+  margin: 2% 10%;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  width: 80%;
+}
+
+.editing-resourcebrowser-progress-wrapper .editing-resourcebrowser-progress-file {
+  border-top: 1px solid #ccc;
+  margin: 2px 0 0 0;
+  padding: 5px;
+}
+
+.editing-resourcebrowser-progress-wrapper .editing-resourcebrowser-progress-file:first-child {
+  border: none;
+  margin: 0;
+}
+
+.editing-resourcebrowser-progress-wrapper .editing-resourcebrowser-progress-file p {
+  color: #555;
+  font-size: 13px;
+  font-weight: bold;
+  margin: 0 3px 6px 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.editing-resourcebrowser-progress-wrapper .editing-resourcebrowser-progress {
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  background-color: #bbb;
+  border-radius: 3px;
+  height: 10px;
+  margin: 0;
+  overflow: hidden;
+}
+
+.editing-resourcebrowser-progress-wrapper .editing-resourcebrowser-progress .editing-resourcebrowser-progress-bar {
+  background-color: #658b51;
+  background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.7)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.7)), color-stop(0.75, rgba(255, 255, 255, 0.7)), color-stop(0.75, transparent), to(transparent));
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.7) 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.7) 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.7) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.5) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.7) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.7) 75%, transparent 75%, transparent);
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  -webkit-transition: width 0.6s ease;
+  -moz-transition: width 0.6s ease;
+  -o-transition: width 0.6s ease;
+  transition: width 0.6s ease;
+  background-color: #658b51;
+  background-size: 15px 15px;
+  float: left;
+  font-size: 12px;
+  height: 100%;
+  line-height: 10px;
+  text-align: center;
+  width: 0%;
+  -webkit-animation: progress-bar-stripes 3s linear infinite;
+  -moz-animation: progress-bar-stripes 3s linear infinite;
+  -ms-animation: progress-bar-stripes 3s linear infinite;
+  -o-animation: progress-bar-stripes 3s linear infinite;
+  animation: progress-bar-stripes 3s linear infinite;
+}
+
+/*
+  Styles for an animated loading spinner.
+*/
+
+@-webkit-keyframes editing-rotation {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@-moz-keyframes editing-rotation {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+
+  to {
+    -moz-transform: rotate(359deg);
+  }
+}
+
+@-o-keyframes editing-rotation {
+  from {
+    -o-transform: rotate(0deg);
+  }
+
+  to {
+    -o-transform: rotate(359deg);
+  }
+}
+
+@keyframes editing-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+/*
+  Styles for an animated progress bar
+*/
+
+@-webkit-keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+@-moz-keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+@-ms-keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+@-o-keyframes progress-bar-stripes {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 40px 0;
+  }
+}
+
+@keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+
+@resource (min-width: 769px) and (max-width: 979px) {
+  .editing-resourcebrowser {
+    height: 90%;
+    width: 90%;
+  }
+}
+
+@resource (max-width: 768px) {
+
+}
+
+@resource (max-width: 480px) {
+  .editing-resourcebrowser {
+    height: 95%;
+    width: 95%;
+  }
+}
