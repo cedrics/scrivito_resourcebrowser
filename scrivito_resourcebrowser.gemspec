@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.executables = []
   gem.test_files  = []
   gem.files       = Dir[
-    '{app,config,lib,vendor}/**/*',
+    '{app,config,lib}/**/*',
     'LICENSE',
     'Rakefile',
     'README.md',
