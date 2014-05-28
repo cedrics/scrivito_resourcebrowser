@@ -11,8 +11,8 @@ application.
 
 ## Installation and Usage
 
-If you already use the gem [scrivito_editors]() then you don't have to change anything, because it
-is a dependency that will be installed automatically.
+If you already use the gem [scrivito_editors](https://github.com/infopark/scrivito_editors) then you
+don't have to change anything, because it is a dependency that will be installed automatically.
 
 If you want to use this gem separately, please add it to your `Gemfile`.
 
@@ -25,7 +25,7 @@ Then require it in your stylesheet manifest.
 And require it in your JavaScript manifest.
 
     //= require scrivito_resourcebrowser
-    
+
 
 ## Changelog
 
