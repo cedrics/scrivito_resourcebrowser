@@ -22,10 +22,21 @@
     for name, options of filters
       title = options.title || 'missing title'
       icon = options.icon || 'editing-icon-generic'
-      query = @_prepareQuery(options.query)
+      query = options.query
 
       @_filterTemplate(title, icon, query)
+        .addClass('filter')
         .appendTo(list)
+
+    separator = $('<li></li>')
+      .addClass('separator')
+      .appendTo(list)
+
+    title = 'Selected <span class="editing-resourcebrowser-counter selected-total"></span>'
+    icon = 'editing-icon-ok'
+    @_filterTemplate(title, icon)
+      .addClass('selected-filter')
+      .appendTo(list)
 
     list
 
@@ -61,6 +72,9 @@
   _getFilterQuery: (filter) ->
     filter.data('query')
 
+  _getFilterAction: (filter) ->
+    filter.data('action')
+
   _defaultQuery: ->
     @_getFilterQuery(@_defaultFilter())
 
@@ -69,7 +83,7 @@
     @_getFilterQuery(filter)
 
   _filterItems: ->
-    @modal.find('li.filter')
+    @modal.find('ul.editing-resourcebrowser-filter-items li')
 
   _deactivateAllFilter: ->
     @_getSearch().val('')
@@ -83,10 +97,21 @@
     query = @_getFilterQuery(filter)
     @_renderPlaceholder(query)
 
+  _triggerSelectedFilter: (filter) ->
+    if @selected.length > 0
+      query = @_prepareQuery(scrivito.obj_where('id', 'equals', @selected))
+      filter.data('query', query)
+    else
+      filter.removeData('query')
+
+    @_triggerFilter(filter)
+
   _filterTemplate: (title, icon, query) ->
     filter = $('<li></li>')
-      .addClass('filter')
-      .data('query', query)
+
+    if query?
+      query = @_prepareQuery(query)
+      filter.data('query', query)
 
     icon = $('<span></span>')
       .addClass('editing-icon')
@@ -202,21 +227,19 @@
     $(item).html(loading)
 
   _renderPlaceholder: (query) ->
-    query ||= @_defaultQuery()
-
-    return unless query?
-
     @_getItems()
       .empty()
-      .html(@_loadingTemplate())
 
-    query.size()
-      .then (total) =>
-        if total > 0
-          @_itemsPlaceholder(total)
-          @_renderItems(query)
-        else
-          @_getItems().empty()
+    if query?
+      @_getItems().html(@_loadingTemplate())
+
+      query.size()
+        .then (total) =>
+          if total > 0
+            @_itemsPlaceholder(total)
+            @_renderItems(query)
+          else
+            @_getItems().empty()
 
   _renderItems: (query, index = 0) ->
     query
@@ -328,6 +351,10 @@
       event.preventDefault()
       @_triggerFilter($(event.currentTarget))
 
+    @modal.on 'click', 'li.selected-filter', (event) =>
+      event.preventDefault()
+      @_triggerSelectedFilter($(event.currentTarget))
+
     @modal.on 'click', @thumbnailViewButtonSelector, (event) =>
       size = $(event.currentTarget).data('size')
       @_changeThumbnailSize(size)
@@ -405,9 +432,9 @@
         @options = options
 
         @_loadModal(json.content)
-        @_setSelected()
         @_loadFilter()
-        @_renderPlaceholder()
+        @_setSelected()
+        @_renderPlaceholder(@_defaultQuery())
         @_changeThumbnailSize()
 
         ResourcebrowserInspector.init(@modal)
@@ -417,4 +444,4 @@
           console.error('Resourcebrowser Uploader Error:', error)
 
         ResourcebrowserUploader.onUploadSuccess = (objs) =>
-          @_renderPlaceholder()
+          @_renderPlaceholder(@_defaultQuery())
