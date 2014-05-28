@@ -157,6 +157,9 @@
     if (item.hasClass('active'))
       @_removeItem(item)
     else
+      if @options.selectionMode == 'single'
+        @_deselectAllItems()
+
       @_addItem(item)
 
   _addItem: (item) ->
