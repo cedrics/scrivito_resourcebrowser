@@ -991,18 +991,18 @@
 }
 
 
-@resource (min-width: 769px) and (max-width: 979px) {
+@media (min-width: 769px) and (max-width: 979px) {
   .editing-resourcebrowser {
     height: 90%;
     width: 90%;
   }
 }
 
-@resource (max-width: 768px) {
+@media (max-width: 768px) {
 
 }
 
-@resource (max-width: 480px) {
+@media (max-width: 480px) {
   .editing-resourcebrowser {
     height: 95%;
     width: 95%;
