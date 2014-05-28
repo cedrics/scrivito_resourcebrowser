@@ -1,4 +1,5 @@
 # v0.0.3
+  * Display "missing title" when a custom filter has no title configured.
   * Added installation and usage section in the README.
 
 # v0.0.2

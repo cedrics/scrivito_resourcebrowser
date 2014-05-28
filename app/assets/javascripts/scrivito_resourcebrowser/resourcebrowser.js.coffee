@@ -20,7 +20,7 @@
       .addClass('editing-resourcebrowser-filter-items')
 
     for name, options of filters
-      title = options.title
+      title = options.title || 'missing title'
       icon = options.icon || 'editing-icon-generic'
       query = @_prepareQuery(options.query)
 
