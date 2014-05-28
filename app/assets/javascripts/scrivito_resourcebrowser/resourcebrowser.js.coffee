@@ -72,9 +72,6 @@
   _getFilterQuery: (filter) ->
     filter.data('query')
 
-  _getFilterAction: (filter) ->
-    filter.data('action')
-
   _defaultQuery: ->
     @_getFilterQuery(@_defaultFilter())
 
@@ -126,8 +123,7 @@
     filter
 
   _prepareQuery: (query) ->
-    params = $.extend(true, {}, query.query())
-    scrivito.chainable_search.create_instance(params)
+    query.clone()
       .order('_last_changed')
       .reverse_order()
       .format('resourcebrowser')
