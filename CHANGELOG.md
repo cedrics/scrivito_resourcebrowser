@@ -1,4 +1,5 @@
 # v0.0.3
+  * Added "selected" filter that displays all currently selected items.
   * Display "missing title" when a custom filter has no title configured.
   * Added installation and usage section in the README.
 
