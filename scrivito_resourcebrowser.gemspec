@@ -29,9 +29,11 @@ Gem::Specification.new do |gem|
     'CHANGELOG.md',
   ]
 
-  gem.add_dependency 'railties'
+  gem.add_dependency 'rails'
+  gem.add_dependency 'jquery-rails'
   gem.add_dependency 'coffee-rails'
   gem.add_dependency 'scrivito_sdk'
 
   gem.add_development_dependency 'pry'
+  gem.add_development_dependency 'jasmine'
 end
