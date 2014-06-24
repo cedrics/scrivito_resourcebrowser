@@ -318,8 +318,8 @@
     @_renderPlaceholder(query)
 
   _initializeBindings: ->
-    $(window).resize ->
-      $('#editing-resourcebrowser.show').center()
+    $(window).resize =>
+      @_center(@modal)
 
     @modal.on 'keyup', 'input.search-field', (event) =>
       if event.keyCode == 13
@@ -381,10 +381,20 @@
       .addClass('editing-resourcebrowser show')
       .attr('id', 'editing-resourcebrowser')
       .appendTo($('body'))
-      .center()
       .html(content)
 
+    @_center(@modal)
+
     @_initializeBindings()
+
+  _center: (domElement) ->
+    if domElement
+      domElement = $(domElement)
+      domElement.css(
+        marginLeft: -domElement.innerWidth() / 2
+        marginTop: -domElement.innerHeight() / 2
+        left: '50%'
+      )
 
   _loadingTemplate: ->
     icon = $('<i></i>')
